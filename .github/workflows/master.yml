@@ -55,5 +55,8 @@ jobs:
       - name: Download Scrutinizer ocular.phar
         run: composer require scrutinizer/ocular -W  --prefer-dist --no-progress --no-plugins
 
+      - name: list folder
+        run: ls -la tests/ && ls -la tests/_output
+
       - name: Upload coverage
         run: vendor/bin/ocular code-coverage:upload --format=php-clover tests/_output/coverage.xml
