@@ -18,9 +18,8 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 8.0
-          - 8.1
           - 8.2
+          - 8.3
     steps:
       - uses: actions/checkout@v2
         with:
@@ -50,8 +49,8 @@ jobs:
       - name: Run test suite with coverage
         run: XDEBUG_MODE=coverage vendor/bin/codecept run unit --coverage-xml --env=ci
 
-      - name: Download Scrutinizer ocular.phar -W  --prefer-dist --no-progress --no-plugins
-        run: composer require scrutinizer/ocular
+      - name: Download Scrutinizer ocular.phar
+        run: composer require scrutinizer/ocular -W  --prefer-dist --no-progress --no-plugins
 
       - name: Upload coverage
         run: vendor/bin/ocular code-coverage:upload --format=php-clover tests/_output/coverage.xml
