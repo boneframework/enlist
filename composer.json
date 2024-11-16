@@ -21,6 +21,11 @@
             "Bone\\Passport\\Enlist\\":"src/"
         }
     },
+    "autoload-dev":{
+        "psr-4":{
+            "Bone\\Passport\\Enlist\\Tests\\": "tests/unit"
+        }
+    },
     "config": {
         "allow-plugins": {
             "phpro/grumphp": false

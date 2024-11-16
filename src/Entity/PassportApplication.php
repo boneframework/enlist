@@ -8,6 +8,7 @@ use Bone\BoneDoctrine\Traits\HasCreatedAtDate;
 use Bone\BoneDoctrine\Traits\HasExpiryDate;
 use Bone\BoneDoctrine\Traits\HasId;
 use DateTimeInterface;
+use Del\Entity\User;
 use Del\Passport\Entity\Role;
 use Del\Traits\HasUser;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,14 +31,14 @@ class PassportApplication
     #[ORM\Column(type: 'integer')]
     private int $approvalEntityId;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $approvedBy = null;
+    #[ORM\ManyToOne]
+    private ?User $approvedBy = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTimeInterface $approvalDate = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $expiredBy = null;
+    #[ORM\ManyToOne]
+    private ?User $expiredBy = null;
 
     use HasCreatedAtDate;
     use HasExpiryDate;
@@ -82,12 +83,12 @@ class PassportApplication
         $this->approvalEntityId = $approvalEntityId;
     }
 
-    public function getApprovedBy(): ?int
+    public function getApprovedBy(): ?User
     {
         return $this->approvedBy;
     }
 
-    public function setApprovedBy(?int $approvedBy): void
+    public function setApprovedBy(?User $approvedBy): void
     {
         $this->approvedBy = $approvedBy;
     }
@@ -102,12 +103,12 @@ class PassportApplication
         $this->approvalDate = $approvalDate;
     }
 
-    public function getExpiredBy(): ?int
+    public function getExpiredBy(): ?User
     {
         return $this->expiredBy;
     }
 
-    public function setExpiredBy(?int $expiredBy): void
+    public function setExpiredBy(?User $expiredBy): void
     {
         $this->expiredBy = $expiredBy;
     }

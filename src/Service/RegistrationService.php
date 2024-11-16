@@ -45,38 +45,40 @@ readonly class RegistrationService
     }
 
     /** @throws EnlistException */
-    public function approveApplication(PassportApplication $application, PassportInterface $passport, PassportInterface $approvedBy): void
+    public function approveApplication(PassportApplication $application, PassportInterface $passport, User $approvedBy): void
     {
         $this->checkValidApplication($application);
         $role = $application->getRole();
         $resource = $this->findResourceOrFail($role, $application);
         $this->checkRoleManagesResource($role, $resource);
-        $canApprove = $this->passportControl->isAuthorized($approvedBy, $resource, $role->getRoleName());
+        $adminPassport = $this->passportControl->findUserPassport($approvedBy->getId());
+        $canApprove = $this->passportControl->isAuthorized($adminPassport, $resource, $role->getRoleName());
 
         if (!$canApprove) {
             throw new EnlistException(EnlistException::UNAUTHORISED);
         }
 
         $this->passportControl->grantEntitlement($passport, $role, $resource, $passport->getUserId());
-        $application->setApprovedBy($approvedBy->getUserId());
+        $application->setApprovedBy($approvedBy);
         $application->setApprovalDate(new  \DateTime('now',  new \DateTimeZone('UTC')));
         $this->entityManager->flush();
     }
 
     /** @throws EnlistException */
-    public function declineApplication(PassportApplication $application, PassportInterface $declinedBy): void
+    public function declineApplication(PassportApplication $application, User $declinedBy): void
     {
         $this->checkValidApplication($application);
         $role = $application->getRole();
         $resource = $this->findResourceOrFail($role, $application);
         $this->checkRoleManagesResource($role, $resource);
-        $canDecline = $this->passportControl->isAuthorized($declinedBy, $resource, $role->getRoleName());
+        $adminPassport = $this->passportControl->findUserPassport($declinedBy->getId());
+        $canDecline = $this->passportControl->isAuthorized($adminPassport, $resource, $role->getRoleName());
 
         if (!$canDecline) {
             throw new EnlistException(EnlistException::UNAUTHORISED);
         }
 
-        $application->setExpiredBy($declinedBy->getUserId());
+        $application->setExpiredBy($declinedBy);
         $application->setExpiryDate(new  \DateTime('now',  new \DateTimeZone('UTC')));
         $this->entityManager->flush();
     }
