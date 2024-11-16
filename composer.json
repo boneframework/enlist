@@ -1,0 +1,29 @@
+{
+    "name": "boneframework/enlist",
+    "description": "User role registration using delboy1978uk/passport",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Derek McLean",
+            "email": "delboy1978uk@gmail.com"
+        }
+    ],
+    "require": {
+        "delboy1978uk/bone-doctrine": "^2.1",
+        "delboy1978uk/passport": "^1.0",
+        "delboy1978uk/user": "^4.7"
+    },
+    "require-dev":{
+        "delboy1978uk/dev-tools": "^1.0.0"
+    },
+    "autoload":{
+        "psr-4":{
+            "Bone\\Passport\\Enlist\\":"src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpro/grumphp": false
+        }
+    }
+}
