@@ -27,11 +27,11 @@ readonly class RegistrationService
         Role $role,
         User $user,
         Resource $resource,
-        int $approvalEntityId
+        string $approvalClass,
+        ?int $approvalEntityId = null
     ): array {
         $this->checkRoleManagesResource($role, $resource);
         $entityId = $resource->getResourceId();
-        $approvalClass = $resource->getResourceType();
         $application = new PassportApplication();
         $application->setRole($role);
         $application->setUser($user);
@@ -116,5 +116,20 @@ readonly class RegistrationService
                 sprintf(EnlistException::INVALID_ENTITY_FOR_ROLE, $role->getRoleName(), $resource->getResourceType())
             );
         }
+    }
+
+    public function getNewApplications(?string $checkingRole = null, ?int $approvalEntityId = null): array
+    {
+        $criteria = ['approvedBy' => null];
+
+        if ($checkingRole) {
+            $criteria['approvalClass'] = $checkingRole;
+        }
+
+        if ($approvalEntityId) {
+            $criteria['approvalEntityId'] = $approvalEntityId;
+        }
+
+        return $this->entityManager->getRepository(PassportApplication::class)->findBy($criteria, ['createdAt' => 'ASC']);
     }
 }

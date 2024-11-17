@@ -14,6 +14,7 @@ use Del\Traits\HasUser;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class PassportApplication
 {
     use HasId;
@@ -28,8 +29,8 @@ class PassportApplication
     #[ORM\Column(type: 'string')]
     private string $approvalClass;
 
-    #[ORM\Column(type: 'integer')]
-    private int $approvalEntityId;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $approvalEntityId;
 
     #[ORM\ManyToOne]
     private ?User $approvedBy = null;
@@ -73,12 +74,12 @@ class PassportApplication
         $this->approvalClass = $approvalClass;
     }
 
-    public function getApprovalEntityId(): int
+    public function getApprovalEntityId(): ?int
     {
         return $this->approvalEntityId;
     }
 
-    public function setApprovalEntityId(int $approvalEntityId): void
+    public function setApprovalEntityId(?int $approvalEntityId): void
     {
         $this->approvalEntityId = $approvalEntityId;
     }
