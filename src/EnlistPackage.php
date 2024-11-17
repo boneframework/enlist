@@ -8,6 +8,7 @@ use Barnacle\Container;
 use Barnacle\RegistrationInterface;
 use Bone\Contracts\Container\EntityRegistrationInterface;
 use Bone\Passport\Enlist\Service\RegistrationService;
+use Del\Passport\PassportControl;
 use Doctrine\ORM\EntityManagerInterface;
 
 class EnlistPackage implements RegistrationInterface, EntityRegistrationInterface
@@ -16,7 +17,7 @@ class EnlistPackage implements RegistrationInterface, EntityRegistrationInterfac
     {
         $c[RegistrationService::class] = $c->factory(function (Container $c) {
             $entityManager =$c->get(EntityManagerInterface::class);
-            $passportControl = $c->get(EntityManagerInterface::class);
+            $passportControl = $c->get(PassportControl::class);
 
             return new RegistrationService($entityManager, $passportControl);
         });
