@@ -58,7 +58,7 @@ readonly class RegistrationService
         $passport = $this->passportControl->findUserPassport($user->getId());
 
         if ($this->passportControl->hasPassportRole($passport, $role->getRoleName(), $resource->getResourceId())) {
-            throw new EnlistException(EnlistException::APPLICATION_EXISTS, 400);
+            throw new EnlistException(sprintf(EnlistException::ROLE_EXISTS, $role->getRoleName(), $resource->getResourceType(), $resource->getResourceId()), 400);
         }
 
         $existingApplication = $this->entityManager->getRepository(PassportApplication::class)->findOneBy([
@@ -68,7 +68,7 @@ readonly class RegistrationService
         ]);
 
         if ($existingApplication) {
-            throw new EnlistException(sprintf(EnlistException::ROLE_EXISTS, $role->getRoleName(), $resource->getResourceType(), $resource->getResourceId()), 400);
+            throw new EnlistException(EnlistException::APPLICATION_EXISTS, 400);
         }
     }
 
