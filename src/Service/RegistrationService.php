@@ -31,6 +31,7 @@ readonly class RegistrationService
         ?int $approvalEntityId = null
     ): array {
         $this->checkRoleManagesResource($role, $resource);
+        $this->checkForExisting($role, $user, $resource);
         $entityId = $resource->getResourceId();
         $application = new PassportApplication();
         $application->setRole($role);
@@ -40,8 +41,35 @@ readonly class RegistrationService
         $application->setApprovalEntityId($approvalEntityId);
         $this->entityManager->persist($application);
         $this->entityManager->flush();
+        $approvalNotificationRole = $this->passportControl->findRole($approvalClass);
+        $passports = $this->passportControl->findPassportRoles($approvalNotificationRole, $approvalEntityId);
+        $reps = [];
 
-        return $this->passportControl->findPassportRoles($role, $entityId);
+        foreach ($passports as $passport) {
+            $rep = $this->entityManager->getRepository(User::class)->find($passport->getUserId());
+            $reps[] = ['email' => $rep->getEmail(), 'name' => $rep->getPerson()->getFullName()];
+        }
+
+        return $reps;
+    }
+
+    public function checkForExisting(Role $role, User $user, Resource $resource): void
+    {
+        $passport = $this->passportControl->findUserPassport($user->getId());
+
+        if ($this->passportControl->hasPassportRole($passport, $role->getRoleName(), $resource->getResourceId())) {
+            throw new EnlistException(EnlistException::APPLICATION_EXISTS, 400);
+        }
+
+        $existingApplication = $this->entityManager->getRepository(PassportApplication::class)->findOneBy([
+           'user' => $user,
+           'role' => $role,
+           'entityId' => $resource->getResourceId(),
+        ]);
+
+        if ($existingApplication) {
+            throw new EnlistException(sprintf(EnlistException::ROLE_EXISTS, $role->getRoleName(), $resource->getResourceType(), $resource->getResourceId()), 400);
+        }
     }
 
     /** @throws EnlistException */
@@ -86,7 +114,7 @@ readonly class RegistrationService
     private function checkValidApplication(PassportApplication $application)
     {
         if ($application->getExpiryDate() !== null) {
-            throw new EnlistException(EnlistException::APPLICATION_DECLIUNED);
+            throw new EnlistException(EnlistException::APPLICATION_DECLINED);
         }
 
         if ($application->getApprovalDate() !== null) {
