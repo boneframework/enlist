@@ -7,10 +7,8 @@ namespace Bone\Passport\Enlist\Entity;
 use Bone\BoneDoctrine\Traits\HasCreatedAtDate;
 use Bone\BoneDoctrine\Traits\HasExpiryDate;
 use Bone\BoneDoctrine\Traits\HasId;
-use Bone\BoneDoctrine\Traits\HasSettings;
 use DateTimeInterface;
 use Del\Entity\User;
-use Del\Passport\Entity\Role;
 use Del\Passport\Traits\HasRole;
 use Del\Traits\HasUser;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,7 +39,9 @@ class PassportApplication
     #[ORM\ManyToOne]
     private ?User $expiredBy = null;
 
-    use HasSettings;
+    #[ORM\Column(type: 'json')]
+    protected array $additional = [];
+
     use HasCreatedAtDate;
     use HasExpiryDate;
 
