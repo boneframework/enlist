@@ -7,9 +7,11 @@ namespace Bone\Passport\Enlist\Entity;
 use Bone\BoneDoctrine\Traits\HasCreatedAtDate;
 use Bone\BoneDoctrine\Traits\HasExpiryDate;
 use Bone\BoneDoctrine\Traits\HasId;
+use Bone\BoneDoctrine\Traits\HasSettings;
 use DateTimeInterface;
 use Del\Entity\User;
 use Del\Passport\Entity\Role;
+use Del\Passport\Traits\HasRole;
 use Del\Traits\HasUser;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,9 +21,7 @@ class PassportApplication
 {
     use HasId;
     use HasUser;
-
-    #[ORM\ManyToOne]
-    private Role $role;
+    use HasRole;
 
     #[ORM\Column(type: 'integer')]
     private int $entityId;
@@ -41,18 +41,9 @@ class PassportApplication
     #[ORM\ManyToOne]
     private ?User $expiredBy = null;
 
+    use HasSettings;
     use HasCreatedAtDate;
     use HasExpiryDate;
-
-    public function getRole(): Role
-    {
-        return $this->role;
-    }
-
-    public function setRole(Role $role): void
-    {
-        $this->role = $role;
-    }
 
     public function getEntityId(): int
     {
@@ -112,5 +103,15 @@ class PassportApplication
     public function setExpiredBy(?User $expiredBy): void
     {
         $this->expiredBy = $expiredBy;
+    }
+
+    public function getAdditionalRegistrationInfo(): array
+    {
+        return $this->getSettings();
+    }
+
+    public function setAdditionalRegistrationInfo(array $info): void
+    {
+        $this->setSettings($info);
     }
 }

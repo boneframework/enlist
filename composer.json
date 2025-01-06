@@ -9,9 +9,9 @@
         }
     ],
     "require": {
-        "delboy1978uk/bone-doctrine": "^2.1",
-        "delboy1978uk/passport": "^1.0",
-        "delboy1978uk/user": "^4.7"
+        "delboy1978uk/bone-doctrine": "^2.3",
+        "delboy1978uk/passport": "^1.2",
+        "delboy1978uk/user": "^4.9"
     },
     "require-dev":{
         "delboy1978uk/dev-tools": "^1.0.0"
